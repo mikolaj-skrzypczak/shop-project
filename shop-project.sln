@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.Api", "Shop.Api\Shop.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.Logic", "Shop.Logic\Shop.Logic.csproj", "{EF84EC63-0243-4D85-8C20-5CE401719D3D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.DataModels", "Shop.DataModels\Shop.DataModels.csproj", "{A3207393-1E33-4C83-BC97-56E760F9D421}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{EF84EC63-0243-4D85-8C20-5CE401719D3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF84EC63-0243-4D85-8C20-5CE401719D3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF84EC63-0243-4D85-8C20-5CE401719D3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3207393-1E33-4C83-BC97-56E760F9D421}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3207393-1E33-4C83-BC97-56E760F9D421}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3207393-1E33-4C83-BC97-56E760F9D421}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3207393-1E33-4C83-BC97-56E760F9D421}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
