@@ -13,4 +13,9 @@
       <Folder Include="Controllers" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Shop.DataModels\Shop.DataModels.csproj" />
+      <ProjectReference Include="..\Shop.Logic\Shop.Logic.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -5,4 +5,8 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Shop.DataModels\Shop.DataModels.csproj" />
+    </ItemGroup>
+
 </Project>
