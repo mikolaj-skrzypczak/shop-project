@@ -1,6 +1,0 @@
-C:\Users\skrzy\RiderProjects\shop-project\Shop.Logic\bin\Debug\Shop.Logic.dll
-C:\Users\skrzy\RiderProjects\shop-project\Shop.Logic\bin\Debug\Shop.Logic.pdb
-C:\Users\skrzy\RiderProjects\shop-project\Shop.Logic\obj\Debug\Shop.Logic.csproj.AssemblyReference.cache
-C:\Users\skrzy\RiderProjects\shop-project\Shop.Logic\obj\Debug\Shop.Logic.csproj.CoreCompileInputs.cache
-C:\Users\skrzy\RiderProjects\shop-project\Shop.Logic\obj\Debug\Shop.Logic.dll
-C:\Users\skrzy\RiderProjects\shop-project\Shop.Logic\obj\Debug\Shop.Logic.pdb

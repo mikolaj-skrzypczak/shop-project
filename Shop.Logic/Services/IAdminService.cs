@@ -1,6 +1,5 @@
-﻿using Shop.DataModels.CustomModels;
-
-namespace Shop.Logic.Services {
+﻿namespace Shop.Logic.Services {
+    using DataModels.CustomModels;
 
     public interface IAdminService {
         ResponseModel AdminLogin(LoginModel loginModel);

@@ -7,6 +7,7 @@
     }
   },
   "AllowedHosts": "*",
+  "SeedDatabase": true,
   "ConnectionStrings": {
     "ConnectionString": "Your MsQL Connection String"
   } 

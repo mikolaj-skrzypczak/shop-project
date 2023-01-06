@@ -1,6 +1,0 @@
-C:\Users\skrzy\RiderProjects\shop-project\Shop.DataModels\bin\Debug\Shop.DataModels.dll
-C:\Users\skrzy\RiderProjects\shop-project\Shop.DataModels\bin\Debug\Shop.DataModels.pdb
-C:\Users\skrzy\RiderProjects\shop-project\Shop.DataModels\obj\Debug\Shop.DataModels.csproj.AssemblyReference.cache
-C:\Users\skrzy\RiderProjects\shop-project\Shop.DataModels\obj\Debug\Shop.DataModels.csproj.CoreCompileInputs.cache
-C:\Users\skrzy\RiderProjects\shop-project\Shop.DataModels\obj\Debug\Shop.DataModels.dll
-C:\Users\skrzy\RiderProjects\shop-project\Shop.DataModels\obj\Debug\Shop.DataModels.pdb
