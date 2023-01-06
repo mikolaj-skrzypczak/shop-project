@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Hosting;
-using Shop.DataModels.CustomModels;
-using Shop.Logic.Services;
-
-namespace Shop.Api.Controllers {
+﻿namespace Shop.Api.Controllers {
+    using DataModels.CustomModels;
+    using Logic.Services;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc;
 
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase {
-        private readonly IWebHostEnvironment _env;
 
         private readonly IAdminService _adminService;
+
+        private readonly IWebHostEnvironment _env;
 
         public AdminController(IAdminService adminService, IWebHostEnvironment env)
         {
