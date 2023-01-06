@@ -11,11 +11,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Shop.Logic.Services;
+using Shop.DataModels.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace Shop.Api
-{
-    public class Startup
-    {
+
+namespace Shop.Api {
+    using MySqlConnector;
+
+    public class Startup {
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -27,8 +31,9 @@ namespace Shop.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
+            services.AddScoped<IAdminService, AdminService>();
+            services.AddTransient(_ => new MySqlConnection(Configuration.GetConnectionString("ConnectionString")));
+            services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shop.Api", Version = "v1" });
             });
         }
@@ -36,8 +41,7 @@ namespace Shop.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
+            if (env.IsDevelopment()){
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shop.Api v1"));

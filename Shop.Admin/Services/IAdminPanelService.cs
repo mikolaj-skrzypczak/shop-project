@@ -1,5 +1,9 @@
-﻿namespace Shop.Admin.Services {
+﻿using System.Threading.Tasks;
+using Shop.DataModels.CustomModels;
+
+namespace Shop.Admin.Services {
+
     public interface IAdminPanelService {
-        
+        Task<ResponseModel> AdminLogin(LoginModel loginModel);
     }
 }

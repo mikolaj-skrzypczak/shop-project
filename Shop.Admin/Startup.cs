@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
- 
+using Shop.Admin.Services;
+
 namespace Shop.Admin
 {
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -27,6 +29,9 @@ namespace Shop.Admin
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddHttpClient<IAdminPanelService, AdminPanelService>(client => {
+                client.BaseAddress = new Uri("https://localhost:44377/");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
