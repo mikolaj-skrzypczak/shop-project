@@ -87,6 +87,7 @@
 
 
 @code {
+
     [CascadingParameter]
     public EventCallback Notify { get; set; }
 
@@ -99,7 +100,7 @@
         var response = await AdminPanelService.AdminLogin(LoginModel);
         if (response.Status){
             var userResponse = response.Message;
-            await ProtectedSessionStorage.SetAsync("adminKey", userResponse);
+            await ProtectedSessionStorage.SetAsync("adminKey", value: userResponse);
             await Notify.InvokeAsync();
             NavManager.NavigateTo("/");
         }

@@ -5,12 +5,13 @@
 Welcome to your new app.
 
 @code{
+
     [CascadingParameter]
     public EventCallback Notify { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender) {
+        if (firstRender){
             await Notify.InvokeAsync();
         }
     }

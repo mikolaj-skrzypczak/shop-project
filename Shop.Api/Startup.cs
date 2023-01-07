@@ -21,9 +21,7 @@ namespace Shop.Api {
         {
             services.AddControllers();
             services.AddScoped<IAdminService, AdminService>();
-            if (Configuration.GetValue<bool>("SeedDatabase")){
-                services.AddScoped<ISeeder, Seeder>();
-            }
+            if (Configuration.GetValue<bool>("SeedDatabase")) services.AddScoped<ISeeder, Seeder>();
             services.AddTransient(_ => new MySqlConnection(Configuration.GetConnectionString("ConnectionString")));
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shop.Api", Version = "v1" });

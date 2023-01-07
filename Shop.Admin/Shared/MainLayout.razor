@@ -2,6 +2,12 @@
 @inject ProtectedSessionStorage SessionStorage;
 @inject NavigationManager NavManager;
 
+<style>
+    .top-row {
+        font-size: 1.5em;
+    }
+</style>
+
 <div class="page">
 
     @if (IsAdminLoggedIn){
@@ -13,7 +19,7 @@
     <div class="main">
         @if (IsAdminLoggedIn){
             <div class="top-row px-4">
-                <a href="#" @onclick="Logout">Logout</a>
+                <span class="oi oi-account-logout" aria-hidden="true"></span> <a href="#" @onclick="Logout">Logout</a>
             </div>
         }
 
@@ -26,11 +32,15 @@
 </div>
 
 @code{
-    public bool IsAdminLoggedIn = false;
-    EventCallback EventNotify => EventCallback.Factory.Create(this, NotifyLayout);
 
-    public void Logout()
+    public bool IsAdminLoggedIn;
+
+    EventCallback EventNotify => EventCallback.Factory.Create(this, callback: NotifyLayout);
+
+    public async void Logout()
     {
+        await SessionStorage.DeleteAsync("adminKey");
+        await NotifyLayout();
         NavManager.NavigateTo("/login");
     }
 

@@ -1,5 +1,6 @@
 ﻿namespace Shop.Api.Controllers {
     using DataModels.CustomModels;
+    using DataModels.Models;
     using Logic.Services;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,18 @@
         [HttpPost] [Route("AdminLogin")] public IActionResult AdminLogin(LoginModel loginModel)
         {
             var data = _adminService.AdminLogin(loginModel);
+            return Ok(data);
+        }
+
+        [HttpPost] [Route("SaveProducer")] public IActionResult SaveProducer(ProducerModel newProducer)
+        {
+            var data = _adminService.SaveProducer(newProducer);
+            return Ok(data);
+        }
+
+        [HttpGet] [Route("GetProducers")] public IActionResult GetProducers()
+        {
+            var data = _adminService.GetProducers();
             return Ok(data);
         }
     }
