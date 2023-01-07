@@ -1,6 +1,7 @@
 ﻿@page "/login"
 @using Shop.Admin.Services
 @using Shop.DataModels.CustomModels
+@inject ProtectedSessionStorage ProtectedSessionStorage;
 @inject IAdminPanelService AdminPanelService;
 @inject NavigationManager NavManager;
 
@@ -86,6 +87,8 @@
 
 
 @code {
+    [CascadingParameter]
+    public EventCallback Notify { get; set; }
 
     public LoginModel LoginModel { get; set; }
 
@@ -95,6 +98,9 @@
     {
         var response = await AdminPanelService.AdminLogin(LoginModel);
         if (response.Status){
+            var userResponse = response.Message;
+            await ProtectedSessionStorage.SetAsync("adminKey", userResponse);
+            await Notify.InvokeAsync();
             NavManager.NavigateTo("/");
         }
         else{

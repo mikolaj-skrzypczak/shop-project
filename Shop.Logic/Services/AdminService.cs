@@ -9,6 +9,9 @@
     public class AdminService : IAdminService {
         private readonly MySqlConnection _dbConnection;
 
+        private readonly static Random Random = new Random();
+
+
         public AdminService(MySqlConnection dbConnection)
         {
             _dbConnection = dbConnection;
@@ -28,7 +31,7 @@
 
                 if (reader.HasRows){
                     response.Status = true;
-                    response.Message = "Login Successful";
+                    response.Message = GetNewSessionId(12);
                 }
                 else{
                     response.Status = false;
@@ -57,6 +60,14 @@
                 );
             }
             return result;
+        }
+
+
+        public static string GetNewSessionId(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[Random.Next(s.Length)]).ToArray());
         }
     }
 }

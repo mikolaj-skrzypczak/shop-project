@@ -1,7 +1,15 @@
-﻿@page "/category"
+﻿@page "/producers"
 
-<h3>Category</h3>
+<h3>Producers</h3>
 
-@code {
+@code{
+    [CascadingParameter]
+    public EventCallback Notify { get; set; }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) {
+            await Notify.InvokeAsync();
+        }
+    }
 }

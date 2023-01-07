@@ -4,4 +4,14 @@
 
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?"/>
+@code{
+    [CascadingParameter]
+    public EventCallback Notify { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) {
+            await Notify.InvokeAsync();
+        }
+    }
+}

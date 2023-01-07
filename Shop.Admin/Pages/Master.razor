@@ -2,6 +2,14 @@
 
 <h3>Master</h3>
 
-@code {
+@code{
+    [CascadingParameter]
+    public EventCallback Notify { get; set; }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) {
+            await Notify.InvokeAsync();
+        }
+    }
 }
