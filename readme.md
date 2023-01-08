@@ -3,6 +3,8 @@
 Store is too much to say. The assignment was to create somewhat of a product catalog. The code in this repository could only serve as a seed for a full-fledged store.
 This would involve expanding the admin panel and adding a project responsible for user interaction.
 
+Yet another CRUD in newly learned technology :')
+
 ---
 Disclaimer:
 Hence this is "just" a uni project, you might encounter truly painful code fragments like `catch(Exception){\\ignored};`. Sorry :)
