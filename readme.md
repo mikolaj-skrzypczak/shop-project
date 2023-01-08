@@ -8,8 +8,8 @@ Disclaimer:
 Hence this is "just" a uni project, you might encounter truly painful code fragments like `catch(Exception){\\ignored};`. Sorry :)
 
 ### First run
-Copy the contents of [appsettings.json.sample](https://github.com/mikolaj-skrzypczak/shop-project/blob/master/Shop.Api/appsettings.json.sample) in Shop.Api to appsettings.json and
-replace Replace the `ConnectionString` in with your own MySql database connection string.
+Copy the contents of [appsettings.json.sample](https://github.com/mikolaj-skrzypczak/shop-project/blob/master/Shop.Api/appsettings.json.sample) in Shop.Api to `appsettings.json` and
+replace Replace the `ConnectionString` with your own MySql database connection string.
 
 Build & run Shop.Api and Shop.Admin, done!
 
