@@ -158,6 +158,7 @@
         <Compile Include="Enums\EIndustry.cs"/>
         <Compile Include="Models\Admin.cs"/>
         <Compile Include="Models\Producer.cs"/>
+        <Compile Include="Models\ProductModel.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="Services\ISeeder.cs"/>
         <Compile Include="Services\Seeder.cs"/>

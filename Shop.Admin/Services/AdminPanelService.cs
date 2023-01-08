@@ -27,15 +27,35 @@
         {
             return await _httpClient.GetJsonAsync<List<ProducerModel>>("api/admin/GetProducers");
         }
-        
+
         public async Task<bool> UpdateProducer(ProducerModel producerToUpdate)
         {
             return await _httpClient.PostJsonAsync<bool>("api/admin/UpdateProducer", content: producerToUpdate);
         }
-        
+
         public async Task<bool> DeleteProducer(ProducerModel producerToDelete)
         {
             return await _httpClient.PostJsonAsync<bool>("api/admin/DeleteProducer", content: producerToDelete);
+        }
+
+        public async Task<List<ProductModel>> GetProducts()
+        {
+            return await _httpClient.GetJsonAsync<List<ProductModel>>("api/admin/GetProducts");
+        }
+
+        public async Task<bool> SaveProduct(ProductModel newProduct)
+        {
+            return await _httpClient.PostJsonAsync<bool>("api/admin/SaveProduct", content: newProduct);
+        }
+
+        public async Task<bool> UpdateProduct(ProductModel productToUpdate)
+        {
+            return await _httpClient.PostJsonAsync<bool>("api/admin/UpdateProduct", content: productToUpdate);
+        }
+
+        public async Task<bool> DeleteProduct(ProductModel productToDelete)
+        {
+            return await _httpClient.PostJsonAsync<bool>("api/admin/DeleteProduct", content: productToDelete);
         }
     }
 }

@@ -56,7 +56,26 @@
             try{
                 var command = new MySqlCommand("INSERT INTO producers(Name, Industry) VALUES (@Name, @Industry); COMMIT;", connection: _dbConnection);
                 command.Parameters.AddWithValue("@Name", value: newProducer.Name);
-                command.Parameters.AddWithValue("@Industry", value: newProducer.Industry ?? 0);
+                command.Parameters.AddWithValue("@Industry", newProducer.Industry ?? 0);
+                command.ExecuteReader();
+                _dbConnection.Close();
+                return true;
+            }
+            catch (Exception){
+                _dbConnection.Close();
+                return false;
+            }
+        }
+
+        public bool SaveProduct(ProductModel newProduct)
+        {
+            _dbConnection.Open();
+            try{
+                var command = new MySqlCommand("INSERT INTO products(Name, Price, Quantity, ProducerId) VALUES (@Name, @Price, @Quantity, @ProducerId); COMMIT;", connection: _dbConnection);
+                command.Parameters.AddWithValue("@Name", value: newProduct.Name);
+                command.Parameters.AddWithValue("@Price", value: newProduct.Price);
+                command.Parameters.AddWithValue("@Quantity", value: newProduct.Quantity);
+                command.Parameters.AddWithValue("@ProducerId", value: newProduct.ProducerId);
                 command.ExecuteReader();
                 _dbConnection.Close();
                 return true;
@@ -69,13 +88,34 @@
 
         public bool UpdateProducer(ProducerModel producerToUpdate)
         {
-            bool flag = false;
+            var flag = false;
             _dbConnection.Open();
             try{
                 var command = new MySqlCommand("UPDATE producers SET Name = @Name, Industry = @Industry WHERE Id = @Id; COMMIT;", connection: _dbConnection);
                 command.Parameters.AddWithValue("@Name", value: producerToUpdate.Name);
-                command.Parameters.AddWithValue("@Industry", value: producerToUpdate.Industry ?? 0);
+                command.Parameters.AddWithValue("@Industry", producerToUpdate.Industry ?? 0);
                 command.Parameters.AddWithValue("@Id", value: producerToUpdate.Id);
+                command.ExecuteReader();
+                flag = true;
+            }
+            catch (Exception){
+                // ignored
+            }
+            _dbConnection.Close();
+            return flag;
+        }
+
+        public bool UpdateProduct(ProductModel productToUpdate)
+        {
+            var flag = false;
+            _dbConnection.Open();
+            try{
+                var command = new MySqlCommand("UPDATE products SET Name = @Name, Price = @Price, Quantity = @Quantity, ProducerId = @ProducerId WHERE Id = @Id; COMMIT;", connection: _dbConnection);
+                command.Parameters.AddWithValue("@Name", value: productToUpdate.Name);
+                command.Parameters.AddWithValue("@Price", value: productToUpdate.Price);
+                command.Parameters.AddWithValue("@Quantity", value: productToUpdate.Quantity);
+                command.Parameters.AddWithValue("@ProducerId", value: productToUpdate.ProducerId);
+                command.Parameters.AddWithValue("@Id", value: productToUpdate.Id);
                 command.ExecuteReader();
                 flag = true;
             }
@@ -88,11 +128,29 @@
 
         public bool DeleteProducer(ProducerModel producerToDelete)
         {
-            bool flag = false;
+            return Delete(id: producerToDelete.Id, "producers");
+        }
+
+        public bool DeleteProduct(ProductModel productToDelete)
+        {
+            return Delete(id: productToDelete.Id, "products");
+        }
+        public List<ProducerModel> GetProducers()
+        {
+            return FetchAll<ProducerModel>("producers");
+        }
+
+        public List<ProductModel> GetProducts()
+        {
+            return FetchAll<ProductModel>("products");
+        }
+        private bool Delete(int? id, string tableName)
+        {
+            var flag = false;
             _dbConnection.Open();
             try{
-                var command = new MySqlCommand("DELETE FROM producers WHERE Id = @Id; COMMIT;", connection: _dbConnection);
-                command.Parameters.AddWithValue("@Id", value: producerToDelete.Id);
+                var command = new MySqlCommand("DELETE FROM " + tableName + " WHERE Id = @Id; COMMIT;", connection: _dbConnection);
+                command.Parameters.AddWithValue("@Id", value: id);
                 command.ExecuteReader();
                 flag = true;
             }
@@ -101,10 +159,6 @@
             }
             _dbConnection.Close();
             return flag;
-        }
-        public List<ProducerModel> GetProducers()
-        {
-            return FetchAll<ProducerModel>("producers");
         }
         private List<T> FetchAll<T>(string tableName)
         {
@@ -118,8 +172,6 @@
                 while (reader.Read()){
                     var obj = (T)Activator.CreateInstance(typeof(T));
                     foreach (var property in obj.GetType().GetProperties()){
-                        var tmp = reader[property.Name];
-
                         if (property.Name == "Industry")
                             property.SetValue(obj: obj, (EIndustry)reader[property.Name]);
                         else
@@ -151,8 +203,7 @@
             return result;
         }
 
-
-        public static string GetNewSessionId(int length)
+        private static string GetNewSessionId(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(element: chars, count: length)

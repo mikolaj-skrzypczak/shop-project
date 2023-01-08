@@ -1,7 +1,7 @@
 ﻿namespace Shop.DataModels.Models {
     public enum EIndustry {
         None,
-        
+
         Automotive,
 
         Construction,

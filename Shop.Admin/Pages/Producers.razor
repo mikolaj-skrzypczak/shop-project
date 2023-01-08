@@ -3,85 +3,6 @@
 @using Shop.DataModels.Models
 @inject IAdminPanelService AdminPanelService;
 
-<style>
-    .modal {
-        position: fixed;
-        z-index: 1;
-        padding-top: 100px;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        background-color: rgb(0, 0, 0);
-        background-color: rgba(0, 0, 0, 0.4);
-        display: block;
-    }
-    
-    .modal-content {
-        background-color: #fefefe;
-        margin: auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 50%;
-        overflow: hidden;
-    }
-    
-    .close {
-        color: #aaaaaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-    
-    .close:hover, .close:focus{
-        color: #000;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    td {
-        vertical-align: center;
-    }
-    
-    .table {
-        margin-bottom: 0;
-    }
-    
-    .wide {
-        width: 100%;
-    }
-
-    .gradient-background {
-        background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
-    }
-    
-    .card {
-      border-radius: 25px;
-      padding: 20px;
-    }
-    
-    .card-body {
-      margin: 10px;
-      border-radius: 25px;
-    }
-
-    .custom-dropdown {
-        display: block;
-        width: 100%;
-        height: calc(1.5em + 0.75rem + 2px);
-        padding: 0.375rem 0.75rem;
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.5;
-        color: #495057;
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid #ced4da;
-        border-radius: 0.25rem;
-        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
-</style>
 
 @if (ProducerModel == null){
     <p>
@@ -154,7 +75,6 @@ else{
                 </table>
             }
         </div>
-
     </div>
 }
 @if (_showEditPopup){
@@ -199,16 +119,17 @@ else{
                 <span class="close" @onclick="ToggleDeletePopup">&times;</span>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete producer <span style="background-color:yellow;">@ProducerToDelete.Name</span>? This action cannot be undone.
+                Are you sure you want to delete producer <span style="background-color:yellow;">@ProducerToDelete.Name</span>
+                and all products associated with them? This action cannot be undone.
             </div>
             <div class="modal-footer">
-                <input type="button" class="btn btn-primary" value="Delete" @onclick="DeleteProducer"/>
+                <input type="button" class="btn btn-danger" value="Delete" @onclick="DeleteProducer"/>
                 <input type="button" class="btn btn-primary" value="Cancel" @onclick="ToggleDeletePopup"/>
             </div>
         </div>
     </div>
 }
-@if (_successPopup){
+@if (_showSuccessPopup){
     <div class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -241,20 +162,48 @@ else{
 
     private bool _showDeletePopup;
 
-    private bool _successPopup;
+    private bool _showSuccessPopup;
 
     private string _message = string.Empty;
-
-
-    protected override async Task OnInitializedAsync()
+    
+    private async Task SaveProducer()
     {
+        var flag = await AdminPanelService.SaveProducer(ProducerModel);
+        _message = flag
+            ? $"Producer {ProducerModel.Name} saved successfully!"
+            : $"Error while saving producer! Producer with name {ProducerModel.Name} might already exists.";
+        ToggleSuccessPopup();
         ProducerModel = new ProducerModel();
         await GetProducers();
     }
 
-    private void ClearForm()
+    private async Task UpdateProducer()
     {
-        ProducerModel = new ProducerModel();
+        var flag = await AdminPanelService.UpdateProducer(ProducerToUpdate);
+        await ToggleEditPopup();
+        _message = flag
+            ? $"Producer {ProducerToUpdate.Name} updated successfully!"
+            : $"Error while updating producer! Producer with name {ProducerToUpdate.Name} might already exists.";
+        ToggleSuccessPopup();
+        ProducerToUpdate = new ProducerModel();
+        await GetProducers();
+    }
+
+    private async Task DeleteProducer()
+    {
+        var flag = await AdminPanelService.DeleteProducer(ProducerToDelete);
+        ToggleDeletePopup();
+        _message = flag
+            ? $"Producer {ProducerToDelete.Name} deleted successfully!"
+            : "Something went wrong :( Try again!";
+        ToggleSuccessPopup();
+        ProducerToDelete = new ProducerModel();
+        await GetProducers();
+    }
+
+    private async Task GetProducers()
+    {
+        ProducersList = await AdminPanelService.GetProducers();
     }
 
     private async Task EditButtonClick(ProducerModel producer)
@@ -272,60 +221,30 @@ else{
     private async Task ToggleEditPopup()
     {
         _showEditPopup = !_showEditPopup;
-        if (!_showEditPopup)
-        {
+        if (!_showEditPopup){
             ProducerToUpdate = new ProducerModel();
             await GetProducers();
         }
     }
-    
+
     private void ToggleDeletePopup()
     {
         _showDeletePopup = !_showDeletePopup;
     }
-    
+
     private void ToggleSuccessPopup()
     {
-        _successPopup = !_successPopup;
+        _showSuccessPopup = !_showSuccessPopup;
     }
 
-    private async Task GetProducers()
+    private void ClearForm()
     {
-        ProducersList = await AdminPanelService.GetProducers();
-    }
-
-    private async Task SaveProducer()
-    {
-        var flag = await AdminPanelService.SaveProducer(ProducerModel);
-        _message = flag 
-            ? "Producer saved successfully!" 
-            : $"Error while saving producer! Producer with name {ProducerModel.Name} might already exists.";
-        ToggleSuccessPopup();
         ProducerModel = new ProducerModel();
-        await GetProducers();
     }
-    
-    private async Task UpdateProducer()
+
+    protected override async Task OnInitializedAsync()
     {
-        var flag = await AdminPanelService.UpdateProducer(ProducerToUpdate);
-        await ToggleEditPopup();
-        _message = flag 
-            ? "Producer updated successfully!" 
-            : $"Error while updating producer! Producer with name {ProducerToUpdate.Name} might already exists.";
-        ToggleSuccessPopup();
-        ProducerToUpdate = new ProducerModel();
-        await GetProducers();
-    }
-    
-    private async Task DeleteProducer()
-    {
-        var flag = await AdminPanelService.DeleteProducer(ProducerToDelete);
-        ToggleDeletePopup();
-        _message = flag 
-            ? "Producer deleted successfully!" 
-            : "Something went wrong :( Try again!";
-        ToggleSuccessPopup();
-        ProducerToDelete = new ProducerModel();
+        ProducerModel = new ProducerModel();
         await GetProducers();
     }
 
@@ -335,5 +254,4 @@ else{
             await Notify.InvokeAsync();
         }
     }
-
 }
