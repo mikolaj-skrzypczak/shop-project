@@ -4,6 +4,42 @@
 @inject IAdminPanelService AdminPanelService;
 
 <style>
+    .modal {
+        position: fixed;
+        z-index: 1;
+        padding-top: 100px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        display: block;
+    }
+    
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        overflow: hidden;
+    }
+    
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    
+    .close:hover, .close:focus{
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
     td {
         vertical-align: center;
     }
@@ -121,6 +157,72 @@ else{
 
     </div>
 }
+@if (ShowEditPopup){
+    <div class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Edit Producer</h5>
+                <span class="close" @onclick="ToggleEditPopup">&times;</span>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="@ProducerToUpdate" OnValidSubmit="UpdateProducer">
+                    <DataAnnotationsValidator/>
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <label>Name:</label>
+                            <InputText @bind-Value="ProducerToUpdate.Name" class="form-control"/>
+                            <ValidationMessage For="@(() => ProducerToUpdate.Name)"/>
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Industry:</label>
+                            <InputSelect class="custom-dropdown" @bind-Value="ProducerToUpdate.Industry">
+                                @foreach (var industry in Enum.GetValues(typeof(EIndustry))){
+                                    <option value="@industry">@industry</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+                </EditForm>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-primary" value="Update" @onclick="UpdateProducer"/>
+                <input type="button" class="btn btn-primary" value="Cancel" @onclick="ToggleEditPopup"/>
+            </div>
+        </div>
+    </div>
+}
+@if (ShowDeletePopup){
+    <div class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Delete Producer</h5>
+                <span class="close" @onclick="ToggleDeletePopup">&times;</span>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete producer <span style="background-color:yellow;">@ProducerToDelete.Name</span>? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-primary" value="Delete" @onclick="DeleteProducer"/>
+                <input type="button" class="btn btn-primary" value="Cancel" @onclick="ToggleDeletePopup"/>
+            </div>
+        </div>
+    </div>
+}
+@if (SuccessPopup){
+    <div class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                Alert <span class="close" @onclick="ToggleSuccessPopup">&times;</span>
+            </div>
+            <div class="modal-body">
+                @Message
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-primary" value="Close" @onclick="ToggleSuccessPopup"/>
+            </div>
+        </div>
+    </div>
+}
 
 @code{
 
@@ -130,6 +232,19 @@ else{
     public ProducerModel ProducerModel { get; set; }
 
     public List<ProducerModel> ProducersList { get; set; }
+
+    public ProducerModel ProducerToUpdate { get; set; }
+
+    private ProducerModel ProducerToDelete { get; set; }
+
+    public bool ShowEditPopup = false;
+
+    public bool ShowDeletePopup = false;
+
+    public bool SuccessPopup = false;
+
+    public string Message = String.Empty;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -142,9 +257,37 @@ else{
         ProducerModel = new ProducerModel();
     }
 
-    private async Task EditButtonClick(ProducerModel producer) {}
+    private void EditButtonClick(ProducerModel producer)
+    {
+        ProducerToUpdate = producer;
+        ToggleEditPopup();
+    }
 
-    private async Task DeleteButtonClick(ProducerModel producer) {}
+    private void DeleteButtonClick(ProducerModel producer)
+    {
+        ProducerToDelete = producer;
+        ToggleDeletePopup();
+    }
+
+    private async Task ToggleEditPopup()
+    {
+        ShowEditPopup = !ShowEditPopup;
+        if (!ShowEditPopup)
+        {
+            ProducerToUpdate = new ProducerModel();
+            await GetProducers();
+        }
+    }
+    
+    private void ToggleDeletePopup()
+    {
+        ShowDeletePopup = !ShowDeletePopup;
+    }
+    
+    private void ToggleSuccessPopup()
+    {
+        SuccessPopup = !SuccessPopup;
+    }
 
     private async Task GetProducers()
     {
@@ -153,9 +296,46 @@ else{
 
     private async Task SaveProducer()
     {
-        await AdminPanelService.SaveProducer(ProducerModel);
+        bool flag = await AdminPanelService.SaveProducer(ProducerModel);
+        if (flag){
+            Message = "Producer saved successfully!";
+        }
+        else{
+            Message = $"Error while saving producer! Producer with name {ProducerModel.Name} might already exists.";
+        }
+        ToggleSuccessPopup();
+        ProducerModel = new ProducerModel();
         await GetProducers();
-        ClearForm();
+    }
+    
+    private async Task UpdateProducer()
+    {
+        bool flag = await AdminPanelService.UpdateProducer(ProducerToUpdate);
+        await ToggleEditPopup();
+        if (flag){
+            Message = "Producer updated successfully!";
+        }
+        else{
+            Message = $"Error while updating producer! Producer with name {ProducerToUpdate.Name} might already exists.";
+        }
+        ToggleSuccessPopup();
+        ProducerToUpdate = new ProducerModel();
+        await GetProducers();
+    }
+    
+    private async Task DeleteProducer()
+    {
+        bool flag = await AdminPanelService.DeleteProducer(ProducerToDelete);
+        ToggleDeletePopup();
+        if (flag){
+            Message = "Producer deleted successfully!";
+        }
+        else{
+            Message = "Something went wrong :( Try again!";
+        }
+        ToggleSuccessPopup();
+        ProducerToDelete = new ProducerModel();
+        await GetProducers();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

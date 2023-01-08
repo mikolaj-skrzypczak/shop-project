@@ -18,14 +18,24 @@
             return await _httpClient.PostJsonAsync<ResponseModel>("api/admin/AdminLogin", content: loginModel);
         }
 
-        public async Task<ProducerModel> SaveProducer(ProducerModel newProducer)
+        public async Task<bool> SaveProducer(ProducerModel newProducer)
         {
-            return await _httpClient.PostJsonAsync<ProducerModel>("api/admin/SaveProducer", content: newProducer);
+            return await _httpClient.PostJsonAsync<bool>("api/admin/SaveProducer", content: newProducer);
         }
 
         public async Task<List<ProducerModel>> GetProducers()
         {
             return await _httpClient.GetJsonAsync<List<ProducerModel>>("api/admin/GetProducers");
+        }
+        
+        public async Task<bool> UpdateProducer(ProducerModel producerToUpdate)
+        {
+            return await _httpClient.PostJsonAsync<bool>("api/admin/UpdateProducer", content: producerToUpdate);
+        }
+        
+        public async Task<bool> DeleteProducer(ProducerModel producerToDelete)
+        {
+            return await _httpClient.PostJsonAsync<bool>("api/admin/DeleteProducer", content: producerToDelete);
         }
     }
 }

@@ -36,5 +36,17 @@
             var data = _adminService.GetProducers();
             return Ok(data);
         }
+        
+        [HttpPost] [Route("UpdateProducer")] public IActionResult UpdateProducer(ProducerModel producerToUpdate)
+        {
+            var data = _adminService.UpdateProducer(producerToUpdate);
+            return Ok(data);
+        }
+        
+        [HttpPost] [Route("DeleteProducer")] public IActionResult DeleteProducer(ProducerModel producerToDelete)
+        {
+            var data = _adminService.DeleteProducer(producerToDelete);
+            return Ok(data);
+        }
     }
 }

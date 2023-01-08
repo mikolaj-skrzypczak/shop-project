@@ -5,8 +5,11 @@
 
     public interface IAdminService {
         ResponseModel AdminLogin(LoginModel loginModel);
-        ProducerModel SaveProducer(ProducerModel newProducer);
+        bool SaveProducer(ProducerModel newProducer);
 
         List<ProducerModel> GetProducers();
+        
+        bool UpdateProducer(ProducerModel producerToUpdate);
+        bool DeleteProducer(ProducerModel producerToDelete);
     }
 }

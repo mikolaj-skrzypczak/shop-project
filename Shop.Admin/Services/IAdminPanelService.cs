@@ -6,7 +6,9 @@
 
     public interface IAdminPanelService {
         Task<ResponseModel> AdminLogin(LoginModel loginModel);
-        Task<ProducerModel> SaveProducer(ProducerModel newProducer);
+        Task<bool> SaveProducer(ProducerModel newProducer);
         Task<List<ProducerModel>> GetProducers();
+        Task<bool> UpdateProducer(ProducerModel producerToUpdate);
+        Task<bool> DeleteProducer(ProducerModel producerToDelete);
     }
 }

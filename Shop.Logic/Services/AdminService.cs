@@ -12,8 +12,6 @@
 
         private readonly static Random Random = new Random();
 
-        private readonly string[] _allowedTables = { "admins", "producers", "products" };
-
         private readonly MySqlConnection _dbConnection;
 
 
@@ -52,22 +50,58 @@
             return response;
         }
 
-        public ProducerModel SaveProducer(ProducerModel newProducer)
+        public bool SaveProducer(ProducerModel newProducer)
         {
             _dbConnection.Open();
             try{
                 var command = new MySqlCommand("INSERT INTO producers(Name, Industry) VALUES (@Name, @Industry); COMMIT;", connection: _dbConnection);
                 command.Parameters.AddWithValue("@Name", value: newProducer.Name);
-                command.Parameters.AddWithValue("@Industry", value: newProducer.Industry);
-
+                command.Parameters.AddWithValue("@Industry", value: newProducer.Industry ?? 0);
                 command.ExecuteReader();
-                return newProducer;
+                _dbConnection.Close();
+                return true;
             }
             catch (Exception){
-                return null;
+                _dbConnection.Close();
+                return false;
             }
         }
 
+        public bool UpdateProducer(ProducerModel producerToUpdate)
+        {
+            bool flag = false;
+            _dbConnection.Open();
+            try{
+                var command = new MySqlCommand("UPDATE producers SET Name = @Name, Industry = @Industry WHERE Id = @Id; COMMIT;", connection: _dbConnection);
+                command.Parameters.AddWithValue("@Name", value: producerToUpdate.Name);
+                command.Parameters.AddWithValue("@Industry", value: producerToUpdate.Industry ?? 0);
+                command.Parameters.AddWithValue("@Id", value: producerToUpdate.Id);
+                command.ExecuteReader();
+                flag = true;
+            }
+            catch (Exception){
+                // ignored
+            }
+            _dbConnection.Close();
+            return flag;
+        }
+
+        public bool DeleteProducer(ProducerModel producerToDelete)
+        {
+            bool flag = false;
+            _dbConnection.Open();
+            try{
+                var command = new MySqlCommand("DELETE FROM producers WHERE Id = @Id; COMMIT;", connection: _dbConnection);
+                command.Parameters.AddWithValue("@Id", value: producerToDelete.Id);
+                command.ExecuteReader();
+                flag = true;
+            }
+            catch (Exception){
+                // ignored
+            }
+            _dbConnection.Close();
+            return flag;
+        }
         public List<ProducerModel> GetProducers()
         {
             return FetchAll<ProducerModel>("producers");
@@ -76,10 +110,10 @@
         {
             var list = new List<T>();
             _dbConnection.Open();
+            MySqlDataReader reader = null;
             try{
-                if (!(Array.IndexOf(array: _allowedTables, value: tableName) > -1)) throw new Exception("No sql injection here :)");
                 var command = new MySqlCommand("SELECT * FROM " + tableName, connection: _dbConnection);
-                var reader = command.ExecuteReader();
+                reader = command.ExecuteReader();
 
                 while (reader.Read()){
                     var obj = (T)Activator.CreateInstance(typeof(T));
@@ -90,16 +124,15 @@
                             property.SetValue(obj: obj, (EIndustry)reader[property.Name]);
                         else
                             property.SetValue(obj: obj, reader[property.Name]);
-
                     }
                     list.Add(obj);
                 }
-                reader.Close();
             }
-            catch (Exception ex){
-                var exc = ex;
-                return list;
+            catch (Exception){
+                // ignored
             }
+            reader?.Close();
+            _dbConnection.Close();
             return list;
         }
         private static string CreateMd5(string input)

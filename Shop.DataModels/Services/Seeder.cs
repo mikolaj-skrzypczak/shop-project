@@ -44,7 +44,7 @@
                 DROP TABLE IF EXISTS producers;
                 CREATE TABLE producers (
                     Id int NOT NULL AUTO_INCREMENT,
-                    Name VARCHAR(100) NOT NULL,
+                    Name VARCHAR(100) NOT NULL UNIQUE,
                     Industry INT NULL,
                     PRIMARY KEY (Id));
                 INSERT INTO producers(Name, Industry) VALUES
