@@ -157,7 +157,7 @@ else{
 
     </div>
 }
-@if (ShowEditPopup){
+@if (_showEditPopup){
     <div class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -191,7 +191,7 @@ else{
         </div>
     </div>
 }
-@if (ShowDeletePopup){
+@if (_showDeletePopup){
     <div class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -208,14 +208,14 @@ else{
         </div>
     </div>
 }
-@if (SuccessPopup){
+@if (_successPopup){
     <div class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 Alert <span class="close" @onclick="ToggleSuccessPopup">&times;</span>
             </div>
             <div class="modal-body">
-                @Message
+                @_message
             </div>
             <div class="modal-footer">
                 <input type="button" class="btn btn-primary" value="Close" @onclick="ToggleSuccessPopup"/>
@@ -229,21 +229,21 @@ else{
     [CascadingParameter]
     public EventCallback Notify { get; set; }
 
-    public ProducerModel ProducerModel { get; set; }
+    private ProducerModel ProducerModel { get; set; }
 
-    public List<ProducerModel> ProducersList { get; set; }
+    private List<ProducerModel> ProducersList { get; set; }
 
-    public ProducerModel ProducerToUpdate { get; set; }
+    private ProducerModel ProducerToUpdate { get; set; }
 
     private ProducerModel ProducerToDelete { get; set; }
 
-    public bool ShowEditPopup = false;
+    private bool _showEditPopup;
 
-    public bool ShowDeletePopup = false;
+    private bool _showDeletePopup;
 
-    public bool SuccessPopup = false;
+    private bool _successPopup;
 
-    public string Message = String.Empty;
+    private string _message = string.Empty;
 
 
     protected override async Task OnInitializedAsync()
@@ -257,10 +257,10 @@ else{
         ProducerModel = new ProducerModel();
     }
 
-    private void EditButtonClick(ProducerModel producer)
+    private async Task EditButtonClick(ProducerModel producer)
     {
         ProducerToUpdate = producer;
-        ToggleEditPopup();
+        await ToggleEditPopup();
     }
 
     private void DeleteButtonClick(ProducerModel producer)
@@ -271,8 +271,8 @@ else{
 
     private async Task ToggleEditPopup()
     {
-        ShowEditPopup = !ShowEditPopup;
-        if (!ShowEditPopup)
+        _showEditPopup = !_showEditPopup;
+        if (!_showEditPopup)
         {
             ProducerToUpdate = new ProducerModel();
             await GetProducers();
@@ -281,12 +281,12 @@ else{
     
     private void ToggleDeletePopup()
     {
-        ShowDeletePopup = !ShowDeletePopup;
+        _showDeletePopup = !_showDeletePopup;
     }
     
     private void ToggleSuccessPopup()
     {
-        SuccessPopup = !SuccessPopup;
+        _successPopup = !_successPopup;
     }
 
     private async Task GetProducers()
@@ -296,13 +296,10 @@ else{
 
     private async Task SaveProducer()
     {
-        bool flag = await AdminPanelService.SaveProducer(ProducerModel);
-        if (flag){
-            Message = "Producer saved successfully!";
-        }
-        else{
-            Message = $"Error while saving producer! Producer with name {ProducerModel.Name} might already exists.";
-        }
+        var flag = await AdminPanelService.SaveProducer(ProducerModel);
+        _message = flag 
+            ? "Producer saved successfully!" 
+            : $"Error while saving producer! Producer with name {ProducerModel.Name} might already exists.";
         ToggleSuccessPopup();
         ProducerModel = new ProducerModel();
         await GetProducers();
@@ -310,14 +307,11 @@ else{
     
     private async Task UpdateProducer()
     {
-        bool flag = await AdminPanelService.UpdateProducer(ProducerToUpdate);
+        var flag = await AdminPanelService.UpdateProducer(ProducerToUpdate);
         await ToggleEditPopup();
-        if (flag){
-            Message = "Producer updated successfully!";
-        }
-        else{
-            Message = $"Error while updating producer! Producer with name {ProducerToUpdate.Name} might already exists.";
-        }
+        _message = flag 
+            ? "Producer updated successfully!" 
+            : $"Error while updating producer! Producer with name {ProducerToUpdate.Name} might already exists.";
         ToggleSuccessPopup();
         ProducerToUpdate = new ProducerModel();
         await GetProducers();
@@ -325,14 +319,11 @@ else{
     
     private async Task DeleteProducer()
     {
-        bool flag = await AdminPanelService.DeleteProducer(ProducerToDelete);
+        var flag = await AdminPanelService.DeleteProducer(ProducerToDelete);
         ToggleDeletePopup();
-        if (flag){
-            Message = "Producer deleted successfully!";
-        }
-        else{
-            Message = "Something went wrong :( Try again!";
-        }
+        _message = flag 
+            ? "Producer deleted successfully!" 
+            : "Something went wrong :( Try again!";
         ToggleSuccessPopup();
         ProducerToDelete = new ProducerModel();
         await GetProducers();
