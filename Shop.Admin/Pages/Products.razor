@@ -64,6 +64,26 @@ else{
                 </div>
             </EditForm>
         </div>
+        @if (ProductsList != null){
+            <div class="card-body">
+                <EditForm Model="@DummyProduct">
+                    <div class="form-row">
+                        <div class="form-group col-2">
+                            <label>Filter by Producer:</label>
+                        </div>
+                        <div class="form-group col-10">
+                            <select class="custom-dropdown" @onchange="SetFilteredProducerIdAndRefresh">
+                                <option value="0">All</option>
+                                @foreach (var producer in ProducersList){
+                                    <option value="@producer.Id">@producer.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </EditForm>
+            </div>
+
+        }
         <div class="card-body gradient-background">
             @if (ProductsList == null){
                 <p>
@@ -211,6 +231,8 @@ else{
 
     private ProductModel ProductToDelete { get; set; }
 
+    private ProductModel DummyProduct { get; } = new();
+
     private bool _showEditPopup;
 
     private bool _showDeletePopup;
@@ -218,6 +240,8 @@ else{
     private bool _showSuccessPopup;
 
     private string _message = string.Empty;
+
+    private int _filteredProducerId;
 
     private async Task SaveProduct()
     {
@@ -265,6 +289,18 @@ else{
     private async Task GetProducts()
     {
         ProductsList = await AdminPanelService.GetProducts();
+        if (_filteredProducerId != 0)
+        {
+            ProductsList = ProductsList.FindAll(p => p.ProducerId == _filteredProducerId);
+        }
+    }
+
+    private async Task SetFilteredProducerIdAndRefresh(ChangeEventArgs e)
+    {
+        if (e.Value != null){
+            _filteredProducerId = int.Parse(e.Value.ToString()!);
+        }
+        await GetProducts();
     }
 
     private string GetProducerName(int id)

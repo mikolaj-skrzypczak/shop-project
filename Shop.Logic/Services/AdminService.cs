@@ -14,7 +14,6 @@
 
         private readonly MySqlConnection _dbConnection;
 
-
         public AdminService(MySqlConnection dbConnection)
         {
             _dbConnection = dbConnection;

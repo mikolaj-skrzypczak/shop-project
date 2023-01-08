@@ -9,6 +9,6 @@
   "AllowedHosts": "*",
   "SeedDatabase": true,
   "ConnectionStrings": {
-    "ConnectionString": "Your MsQL Connection String"
+    "ConnectionString": "Server={server};User ID={user};Password={password};Database={database};Allow User Variables=True"
   } 
 }

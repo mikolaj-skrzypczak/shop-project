@@ -5,55 +5,6 @@
 @inject IAdminPanelService AdminPanelService;
 @inject NavigationManager NavManager;
 
-<style>
-    .login-box {
-        font-family: 'Open Sans', sans-serif;
-        margin: 20px 0 20px 0;
-        width: 100%;
-        text-align: center;
-    }
-    
-    p{
-        font-size: 12px;
-        text-decoration: none;
-        color: #ffffff;
-    }
-    
-    h1{
-        font-size: 1.5em;
-        color: #525252;
-    }
-    
-    .box {
-        background: white;
-        width: 300px;
-        border-radius: 6px;
-        margin: 0 auto 0 auto;
-        padding: 0 0 10px 0;
-        border: #2877e9 4px solid;
-    }
-    
-    .email{
-        background: #ffffff;
-        border: #ccc 1px solid;
-        border-bottom: #ccc 2px solid;
-        padding: 8px;
-        width: 250px;
-        color: #525252;
-        margin-top: 10px;
-        font-size: 1em;
-        border-radius: 4px;
-    }
-    
-    .password{
-        background: #ecf0f1;
-        border: #ccc 1px solid;
-        padding: 8px;
-        width: 250px;
-        font-size: 1em;
-        border-radius: 4px;
-    }
-</style>
 
 <div style="min-height: 400px;">
     <div class="login-box">
@@ -78,9 +29,7 @@
         <div>
             <br/>
             <br/>
-            <p style="color: #e52e50">
-                <h4> @AlertMessage </h4>
-            </p>
+            <p style="color: #e52e50">@AlertMessage</p>
         </div>
     </div>
 </div>
@@ -91,9 +40,9 @@
     [CascadingParameter]
     public EventCallback Notify { get; set; }
 
-    public LoginModel LoginModel { get; set; }
+    private LoginModel LoginModel { get; set; }
 
-    public string AlertMessage { get; set; }
+    private string AlertMessage { get; set; }
 
     private async Task LoginClick()
     {
@@ -109,6 +58,7 @@
         }
 
     }
+
     protected override Task OnInitializedAsync()
     {
         LoginModel = new LoginModel();
