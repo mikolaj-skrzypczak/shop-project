@@ -5,8 +5,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Security.Cryptography;
-    using System.Text;
 
     public class AdminService : IAdminService {
 
@@ -27,7 +25,7 @@
             try{
                 var command = new MySqlCommand("SELECT * FROM admins WHERE email = @Email AND password = @Password", connection: _dbConnection);
                 command.Parameters.AddWithValue("@Email", value: loginModel.EmailId);
-                command.Parameters.AddWithValue("@Password", CreateMd5(loginModel.Password));
+                command.Parameters.AddWithValue("@Password", loginModel.Password);
 
                 var reader = command.ExecuteReader();
 
@@ -186,22 +184,6 @@
             _dbConnection.Close();
             return list;
         }
-        private static string CreateMd5(string input)
-        {
-            string result;
-            using (var hash = MD5.Create()){
-                result = string.Join(
-                "",
-                from ba in hash.ComputeHash
-                (
-                Encoding.UTF8.GetBytes(input)
-                )
-                select ba.ToString("x2")
-                );
-            }
-            return result;
-        }
-
         private static string GetNewSessionId(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

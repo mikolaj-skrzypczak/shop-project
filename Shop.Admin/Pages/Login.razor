@@ -1,6 +1,8 @@
 ﻿@page "/login"
 @using Shop.Admin.Services
 @using Shop.DataModels.CustomModels
+@using System.Security.Cryptography
+@using System.Text
 @inject ProtectedSessionStorage ProtectedSessionStorage;
 @inject IAdminPanelService AdminPanelService;
 @inject NavigationManager NavManager;
@@ -46,6 +48,7 @@
 
     private async Task LoginClick()
     {
+        LoginModel.Password = CreateMd5(LoginModel.Password);
         var response = await AdminPanelService.AdminLogin(LoginModel);
         if (response.Status){
             var userResponse = response.Message;
@@ -57,6 +60,20 @@
             AlertMessage = response.Message;
         }
 
+    }
+
+    private static string CreateMd5(string input)
+    {
+        using var hash = MD5.Create();
+        var result = string.Join(
+            "",
+            from ba in hash.ComputeHash
+                (
+                    Encoding.UTF8.GetBytes(input)
+                )
+            select ba.ToString("x2")
+            );
+        return result;
     }
 
     protected override Task OnInitializedAsync()

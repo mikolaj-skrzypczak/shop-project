@@ -2,10 +2,6 @@
     using System.ComponentModel.DataAnnotations;
 
     public class LoginModel {
-        public string UserKey { get; set; }
-
-        public string Name { get; set; }
-
         [Required(ErrorMessage = "*EmailId is required")]
         public string EmailId { get; set; }
 
